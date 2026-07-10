@@ -6,6 +6,10 @@ on:
   # 允许手动触发部署
   workflow_dispatch:
 
+# 授予 GITHUB_TOKEN 写入权限，否则无法推送到 gh-pages 分支
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
