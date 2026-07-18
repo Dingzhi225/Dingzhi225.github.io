@@ -126,12 +126,7 @@ claude
 
 ```json
 {
-    "editor.fontSize": 14,
-    "files.autoSave": "afterDelay",
-    "terminal.integrated.mouseWheelScrollSensitivity": 3,
-    "terminal.integrated.gpuAcceleration": "off",
     "claudeCode.environmentVariables": [
-    
         { "name": "ANTHROPIC_BASE_URL",
         "value": "https://api.deepseek.com/anthropic"},
         {"name": "ANTHROPIC_AUTH_TOKEN",
@@ -150,7 +145,6 @@ claude
         "value": "max"}
 
     ],
-    "terminal.integrated.fontSize": 13
 }
 ```
 
