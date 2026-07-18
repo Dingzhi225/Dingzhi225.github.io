@@ -60,6 +60,9 @@ date: 2026-07-07 16:02:59
     - name: Windy
       link: https://www.windy.com/
       descr: 全球交互式气象预报平台
+    - name: Zoom Earth
+      link: https://zoom.earth/
+      descr: 交互式世界天气图
 
 - class_name: 气象数据服务
   class_desc: 观测数据、再分析数据提供

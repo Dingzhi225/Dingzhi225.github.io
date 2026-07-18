@@ -11,6 +11,8 @@ cover: https://bee-reg-ab.imagency.cn/e/bc6cbb00ee43d62f131077eff84d4576.jpg
 
 1. 本文开发环境建立在“适用于Linux的Windows子系统”（WSL）上，使用的发行版为Ubuntu 22.04 LTS，个人喜欢在Linux操作系统上进行编程和开发，一旦上手了就会感觉很方便。对于WSL，Microsoft官方提供了详细的教程：<https://learn.microsoft.com/zh-cn/windows/wsl/>。
 
+> macOS 操作系统作为类 Unix 操作系统，操作方式与 Linux 相似，因此本文操作方法在 macOS 也可以参考。
+
 2. 你已经获取了Deepseek的官方应用程序接口（API），如果没有，请访问 <https://platform.deepseek.com/usage> ，按照官网要求获取API并充值。
 
 3. 电脑上已经安装了VS code（安装在Windows上，无需安装在WSL上，只需要在VScode上安装remote ssh和wsl扩展即可），如果没有，上官网可以快速安装。
@@ -41,6 +43,8 @@ sudo apt list -a nodejs
 ```bash 
 sudo apt install nodejs
 ```
+> macOS 使用 Homebrew 进行安装
+
 安装完成后，运行
 ```bash
 node --version && npm --version
@@ -113,4 +117,40 @@ claude
 在WSL上安装Claude code 扩展，安装好后打开扩展，此时侧边栏能够看到聊天框，说明配置已经自动完成了，**此时你可以在集成开发环境（IDE）上运行Claude code了**，当然命令行也可以运行，只是有部分内容会自动显示在VScode上（比如当AI介入文件修改时，文件的改动对比）。如果你更喜欢命令行界面，你也可以在扩展设置中选择 “Use Terminal”。
 
 ![](https://bee-reg-ab.imagency.cn/e/ffb1efcdc2e99311903c274bf12c8fd0.jpg)
+
+如果侧边栏没有如期呈现聊天界面，而是提示需要登录，则需要在 Claude code 扩展设置中进一步配置
+
+选择 environment variables 设置，进入 `setting.json` 配置文件，将上文[配置Deepseek](##配置Deepseek)设置的环境变量以 json 的格式写入到 `setting.json` 文件中，配置好后完整内容如下。
+
+> 转换成json过程太麻烦？别忘了你已经可以请教 Claude code 了！打开命令行试试看！
+
+```json
+{
+    "editor.fontSize": 14,
+    "files.autoSave": "afterDelay",
+    "terminal.integrated.mouseWheelScrollSensitivity": 3,
+    "terminal.integrated.gpuAcceleration": "off",
+    "claudeCode.environmentVariables": [
+    
+        { "name": "ANTHROPIC_BASE_URL",
+        "value": "https://api.deepseek.com/anthropic"},
+        {"name": "ANTHROPIC_AUTH_TOKEN",
+        "value": "sk-facffc5d13ad40d58e51296c6d13ce4c"},
+        {"name": "ANTHROPIC_MODEL",
+        "value": "deepseek-v4-pro[1m]"},
+        {"name": "ANTHROPIC_DEFAULT_OPUS_MODEL",
+        "value": "deepseek-v4-pro[1m]"},
+        {"name": "ANTHROPIC_DEFAULT_SONNET_MODEL",
+        "value": "deepseek-v4-pro[1m]"},
+        {"name": "ANTHROPIC_DEFAULT_HAIKU_MODEL",
+        "value": "deepseek-v4-flash"},
+        {"name": "CLAUDE_CODE_SUBAGENT_MODEL",
+        "value": "deepseek-v4-flash"},
+        {"name": "CLAUDE_CODE_EFFORT_LEVEL",
+        "value": "max"}
+
+    ],
+    "terminal.integrated.fontSize": 13
+}
+```
 
