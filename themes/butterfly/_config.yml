@@ -71,7 +71,7 @@ disable_top_img: false
 
 # If the banner of page not setting, it will show the default_top_img
 # default_top_img: 'linear-gradient(20deg, #0062be, #925696, #cc426e, #fb0347)'
-default_top_img: https://bee-reg-ab.imagency.cn/e/6329a91050c54327015d0144f3ea7088.jpg
+default_top_img: /img/cover.jpeg
 
 # The banner image of index page
 index_img:

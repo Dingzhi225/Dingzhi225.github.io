@@ -2,6 +2,7 @@
 title: Hello World ——建站过程概述
 tags: "hexo"
 categories: "前端开发"
+date: 2026-07-08 17:00:00
 ---
 
 本站为基于Hexo框架建立的静态网站。

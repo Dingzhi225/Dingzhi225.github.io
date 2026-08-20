@@ -11,7 +11,7 @@ cover: https://bee-reg-ab.imagency.cn/e/bc6cbb00ee43d62f131077eff84d4576.jpg
 
 1. 本文开发环境建立在“适用于Linux的Windows子系统”（WSL）上，使用的发行版为Ubuntu 22.04 LTS，个人喜欢在Linux操作系统上进行编程和开发，一旦上手了就会感觉很方便。对于WSL，Microsoft官方提供了详细的教程：<https://learn.microsoft.com/zh-cn/windows/wsl/>。
 
-> macOS 操作系统作为类 Unix 操作系统，操作方式与 Linux 相似，因此本文操作方法在 macOS 也可以参考。
+> macOS 操作系统作为类 Unix 操作系统，操作方式与 Linux 相似，因此本文操作方法在 macOS 也可以参考。Windows也可以进行，流程一致但具体操作方法有些不同。
 
 2. 你已经获取了Deepseek的官方应用程序接口（API），如果没有，请访问 <https://platform.deepseek.com/usage> ，按照官网要求获取API并充值。
 
@@ -81,6 +81,11 @@ claude --version
 出现版本号之后表明安装成功
 
 ## 配置Deepseek
+
+有两种方法，不过殊途同归
+
+### 写入环境变量
+
 国内无法直接访问Claude code，所以先不急着打开（直接打开会显示网络问题然后退出）
 
 直接在终端中运行下列命令，或者打开 `~/.bashrc` 将下列命令写入环境变量
@@ -111,6 +116,28 @@ claude
 
 **到这里，你已经可以在命令行界面（CLI）中运行你的智能体了**
 
+### 写入配置文件 settings.json
+
+第一次运行 Claude code，即使不成功，用户主目录中也会生成 `.claude` 目录，其中 `settings.json`是 Claude code 的配置文件
+
+将上述配置以 JSON 文件的格式写入
+
+```json
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "<你的 Deepseek API key>",
+    "ANTHROPIC_BASE_URL": "https://api.deepseek.com/anthropic",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "deepseek-v4-flash",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "deepseek-v4-pro[1m]",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "deepseek-v4-pro[1m]",
+    "ANTHROPIC_MODEL": "deepseek-v4-pro[1m]",
+    "CLAUDE_CODE_EFFORT_LEVEL": "max",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "deepseek-v4-flash"
+  },
+```
+重启 Claude code 就会生效
+
+第二种方法会更好，只作用于 Claude，不会影响整个终端。而且，该方法便于后期多 agent 和多 LLM 的管理，后续文章会提到。
+
 ## VScode 配置
 使用VScode连接到WSL（点击左下角图标，出现弹窗“连接到wsl”，选择）
 
@@ -122,7 +149,7 @@ claude
 
 选择 environment variables 设置，进入 `setting.json` 配置文件，将上文[配置Deepseek](##配置Deepseek)设置的环境变量以 json 的格式写入到 `setting.json` 文件中，配置好后完整内容如下。
 
-> 转换成json过程太麻烦？别忘了你已经可以请教 Claude code 了！打开命令行试试看！
+> 转换过程太麻烦？别忘了你已经可以请教 Claude code 了！打开命令行试试看！
 
 ```json
 {

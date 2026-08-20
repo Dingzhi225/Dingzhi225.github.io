@@ -37,6 +37,11 @@ npm > 9
 npm install 
 ```
 
+The search function is based on algolia. In order to let it work, you need to get your own api key from  <https://www.algolia.com>. Then modify the application ID and search API key in file `themes/butterfly/_config.yml`. Make a file named `.env` to store the write API key. 
+
+**Remember that DO NOT share the write API key publicly.**
+
+
 3. Run server
 
 ```bash
