@@ -157,7 +157,7 @@ claude
         { "name": "ANTHROPIC_BASE_URL",
         "value": "https://api.deepseek.com/anthropic"},
         {"name": "ANTHROPIC_AUTH_TOKEN",
-        "value": "sk-facffc5d13ad40d58e51296c6d13ce4c"},
+        "value": "你的 DeepSeek API key"},
         {"name": "ANTHROPIC_MODEL",
         "value": "deepseek-v4-pro[1m]"},
         {"name": "ANTHROPIC_DEFAULT_OPUS_MODEL",
