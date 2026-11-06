@@ -173,6 +173,7 @@ subtitle:
   source: false
   # If you close the typewriter effect, the subtitle will only show the first line of sub
   sub: 
+  - "我们必须知道，我们必将知道！——大卫·希尔伯特"
   - "欢迎来到我的工作室！"
   - "Have a nice day!"
   - "今日事今日毕！"

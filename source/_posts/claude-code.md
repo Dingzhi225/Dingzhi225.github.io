@@ -9,22 +9,52 @@ cover: https://bee-reg-ab.imagency.cn/e/bc6cbb00ee43d62f131077eff84d4576.jpg
 
 # 开始之前
 
-1. 本文开发环境建立在“适用于Linux的Windows子系统”（WSL）上，使用的发行版为Ubuntu 22.04 LTS，个人喜欢在Linux操作系统上进行编程和开发，一旦上手了就会感觉很方便。对于WSL，Microsoft官方提供了详细的教程：<https://learn.microsoft.com/zh-cn/windows/wsl/>。
+1. 博主开发环境在“适用于Linux的Windows子系统”（WSL）和 MacOS上，WSL使用的 Linux 发行版为Ubuntu 22.04 LTS，对于WSL，Microsoft官方提供了详细的教程：<https://learn.microsoft.com/zh-cn/windows/wsl/>。
 
-> macOS 操作系统作为类 Unix 操作系统，操作方式与 Linux 相似，因此本文操作方法在 macOS 也可以参考。Windows也可以进行，流程一致但具体操作方法有些不同。
+> MacOS 操作系统作为类 Unix 操作系统，操作方式与 Linux 很接近。本文主要侧重前两者环境下的 Claude code的配置和安装，Windows也会适当介绍，它与前两者流程基本一致但具体操作方法有些不同，详细内容可参考官方文档 <https://code.claude.com/docs/en/overview#native-install-recommended>
 
 2. 你已经获取了Deepseek的官方应用程序接口（API），如果没有，请访问 <https://platform.deepseek.com/usage> ，按照官网要求获取API并充值。
 
-3. 电脑上已经安装了VS code（安装在Windows上，无需安装在WSL上，只需要在VScode上安装remote ssh和wsl扩展即可），如果没有，上官网可以快速安装。
+3. 电脑上已经安装了VS code，如果没有，上官网可以快速安装。
 
 # 快速开始
-## 安装Node.js
+本次安装的是命令行界面（CLI）版本的 Claude code
+
+## 方法一：使用安装脚本（官方推荐）
+适用于不同环境，有不同的安装方法
+
+适用于Linux，MacOS，WSL 的shell命令
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+```
+适用于 Windows Powershell 的命令
+```powershell
+irm https://claude.ai/install.ps1 | iex
+```
+适用于 MacOS Homebrew 的命令
+```bash
+brew install --cask claude-code
+```
+适用于 Windows winget 的命令
+```powershell
+winget install Anthropic.ClaudeCode
+```
+安装好后运行
+```bash
+claude --version
+```
+出现版本号之后表明安装成功
+
+## 方法二：基于Node.js
+### 安装Node.js
 
 > Node.js® 是一个免费、开源、跨平台的 JavaScript 运行时环境，它让开发人员能够创建服务器、 Web 应用、命令行工具和脚本。
 
-启动Ubuntu，打开bash命令行
+> 建议前往 Node.js [官方网站](https://nodejs.org/zh-cn)，按照官方文档描述进行安装，下面对 Ubuntu 进行一些补充
 
-Ubuntu搭载的软件包管理器（apt）提供的Node.js版本比较旧，Claude code要求Node.js版本不低于18，不建议用apt直接下载
+启动Ubuntu，打开bash命令行，Ubuntu搭载的软件包管理器（apt）提供的Node.js版本比较旧，Claude code要求Node.js版本不低于18，不建议用apt直接下载
+
+> 注：不同操作系统使用不同的软件包管理器，例如，Windows 使用 winget，macOS 使用 Homebrew，CentOS 使用 yum，Fedora 使用 dnf 等。
 
 使用curl命令下载一段用于设置Node.js安装源的bash脚本，并调用bash直接运行
 
@@ -43,13 +73,27 @@ sudo apt list -a nodejs
 ```bash 
 sudo apt install nodejs
 ```
-> macOS 使用 Homebrew 进行安装
 
 安装完成后，运行
 ```bash
 node --version && npm --version
 ```
 出现版本号表示成功（npm 为Node package manager）
+
+### 使用Node.js安装Claude code
+
+运行以下命令
+```bash
+npm install -g @anthropic-ai/claude-code
+```
+> 命令解析：`-g` 表示全局安装（所有项目均可访问），没有该选项表示安装到当前项目目录（自动创建 `node_modules` 目录），可以运行 `npm list -g --depth=0` 来查看当前安装的模块
+
+安装好后运行
+```bash
+claude --version
+```
+出现版本号之后表明安装成功
+
 
 ## 安装Git
 > Git 是一个免费的开源版本控制系统，适用于软件开发。得益于Github、Gitlab等Git托管服务，Git在今天被广泛使用，并且与编辑器深度集成。
@@ -66,29 +110,40 @@ git --version
 ```
 出现版本号则运行成功。
 
-## 使用Node.js安装Claude code
+> Windows 用户可以前往 git [官网](https://git-scm.com/about) 参考文档进行下载安装
 
-运行以下命令
-```bash
-npm install -g @anthropic-ai/claude-code
+# 配置Deepseek
+
+有两种方法，不过殊途同归，个人更推荐第一种方法，避免污染全局环境
+
+## 方法一：写入配置文件 settings.json（推荐）
+
+第一次运行 Claude code，即使不成功，用户主目录（Linux：`/home/user_name/`，MacOS: `/Users/user_name/`，Windows: `C:\Users\user_name\`）中也会生成 `.claude` 目录，其中 `settings.json`是 Claude code 的配置文件
+
+将上述配置以 JSON 文件的格式写入
+
+```json
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "<你的 Deepseek API key>",
+    "ANTHROPIC_BASE_URL": "https://api.deepseek.com/anthropic",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "deepseek-v4-flash",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "deepseek-v4-pro[1m]",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "deepseek-v4-pro[1m]",
+    "ANTHROPIC_MODEL": "deepseek-v4-pro[1m]",
+    "CLAUDE_CODE_EFFORT_LEVEL": "max",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "deepseek-v4-flash"
+  },
 ```
-> 命令解析：`-g` 表示全局安装（所有项目均可访问），没有该选项表示安装到当前项目目录（自动创建 `node_modules` 目录），可以运行 `npm list -g --depth=0` 来查看当前安装的模块
+重启 Claude code 就会生效
 
-安装好后运行
-```bash
-claude --version
-```
-出现版本号之后表明安装成功
+该方法会更好，只作用于 Claude，不会影响整个终端。而且，该方法便于后期多 agent 和多 LLM 的管理，后续文章会提到。
 
-## 配置Deepseek
-
-有两种方法，不过殊途同归
-
-### 写入环境变量
+## 方法二：写入环境变量
+### MacOS或Linux
 
 国内无法直接访问Claude code，所以先不急着打开（直接打开会显示网络问题然后退出）
 
-直接在终端中运行下列命令，或者打开 `~/.bashrc` 将下列命令写入环境变量
+对于 MacOS，Linux 系统，直接在终端中运行下列命令，或者打开 `~/.bashrc` 将下列命令写入环境变量
 ```bash
 # Claude code
 export ANTHROPIC_BASE_URL=https://api.deepseek.com/anthropic
@@ -114,31 +169,32 @@ claude
 
 注意，你在某一目录下运行Claude，该目录默认被视为他的工作目录，因此，建议不要在根目录上运行。
 
-**到这里，你已经可以在命令行界面（CLI）中运行你的智能体了**
+**到这里，你已经可以在CLI中运行你的智能体了**
 
-### 写入配置文件 settings.json
+### Windows
 
-第一次运行 Claude code，即使不成功，用户主目录中也会生成 `.claude` 目录，其中 `settings.json`是 Claude code 的配置文件
-
-将上述配置以 JSON 文件的格式写入
-
-```json
-  "env": {
-    "ANTHROPIC_AUTH_TOKEN": "<你的 Deepseek API key>",
-    "ANTHROPIC_BASE_URL": "https://api.deepseek.com/anthropic",
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "deepseek-v4-flash",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "deepseek-v4-pro[1m]",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "deepseek-v4-pro[1m]",
-    "ANTHROPIC_MODEL": "deepseek-v4-pro[1m]",
-    "CLAUDE_CODE_EFFORT_LEVEL": "max",
-    "CLAUDE_CODE_SUBAGENT_MODEL": "deepseek-v4-flash"
-  },
+Windows 操作方法如下，首先检查 PowerShell 配置文件
+```powershell
+if (!(Test-Path -Path $PROFILE)) { New-Item -ItemType File -Path $PROFILE -Force }
 ```
-重启 Claude code 就会生效
+之后使用记事本打开配置文件
+```powershell
+notepad $PROFILE
+```
+将以下内容写入到配置文件
+```powershell
+$env:ANTHROPIC_BASE_URL="https://api.deepseek.com/anthropic"
+$env:ANTHROPIC_AUTH_TOKEN="<你的 DeepSeek API Key>"
+$env:ANTHROPIC_MODEL="deepseek-flash[1m]"
+$env:ANTHROPIC_DEFAULT_OPUS_MODEL="deepseek-flash[1m]"
+$env:ANTHROPIC_DEFAULT_SONNET_MODEL="deepseek-flash[1m]"
+$env:ANTHROPIC_DEFAULT_HAIKU_MODEL="deepseek-flash"
+$env:CLAUDE_CODE_SUBAGENT_MODEL="deepseek-flash"
+$env:CLAUDE_CODE_EFFORT_LEVEL="max"
+```
+后续在 PowerShell 上运行 Claude 同理
 
-第二种方法会更好，只作用于 Claude，不会影响整个终端。而且，该方法便于后期多 agent 和多 LLM 的管理，后续文章会提到。
-
-## VScode 配置
+# VScode 配置
 使用VScode连接到WSL（点击左下角图标，出现弹窗“连接到wsl”，选择）
 
 在WSL上安装Claude code 扩展，安装好后打开扩展，此时侧边栏能够看到聊天框，说明配置已经自动完成了，**此时你可以在集成开发环境（IDE）上运行Claude code了**，当然命令行也可以运行，只是有部分内容会自动显示在VScode上（比如当AI介入文件修改时，文件的改动对比）。如果你更喜欢命令行界面，你也可以在扩展设置中选择 “Use Terminal”。
