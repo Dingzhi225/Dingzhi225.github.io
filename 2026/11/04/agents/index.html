@@ -1,0 +1,740 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>AI Agent 气象科研实践基础 | DZ Studio</title><meta name="author" content="LuoDZ"><meta name="copyright" content="LuoDZ"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="现在可以用的 AI 智能体，或者说智能工作助手已经越来越丰富了，比如前面介绍过的 Claude code，还有 OpenAI 的Codex，腾讯的 workbuddy 等。他们安装和配置都很方便，能力上各有优势，可以彼此搭配起来用。后面就不再长文介绍安装和配置方法了，今天来简单梳理一下我学到的关于 AI Agent 的概念和关键应用。 AI Agent 基础应用Agent 模式（自主编程+自动运行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI Agent 气象科研实践基础">
+<meta property="og:url" content="https://dingzhi225.github.io/2026/11/04/agents/index.html">
+<meta property="og:site_name" content="DZ Studio">
+<meta property="og:description" content="现在可以用的 AI 智能体，或者说智能工作助手已经越来越丰富了，比如前面介绍过的 Claude code，还有 OpenAI 的Codex，腾讯的 workbuddy 等。他们安装和配置都很方便，能力上各有优势，可以彼此搭配起来用。后面就不再长文介绍安装和配置方法了，今天来简单梳理一下我学到的关于 AI Agent 的概念和关键应用。 AI Agent 基础应用Agent 模式（自主编程+自动运行">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.imgs.ovh/2026/11/06/ae8e08be419b35541b69c71a02ac4f20.png">
+<meta property="article:published_time" content="2026-11-04T08:04:24.000Z">
+<meta property="article:modified_time" content="2026-11-06T06:32:16.169Z">
+<meta property="article:author" content="LuoDZ">
+<meta property="article:tag" content="AI Agent">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.imgs.ovh/2026/11/06/ae8e08be419b35541b69c71a02ac4f20.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "AI Agent 气象科研实践基础",
+  "url": "https://dingzhi225.github.io/2026/11/04/agents/",
+  "image": "https://i.imgs.ovh/2026/11/06/ae8e08be419b35541b69c71a02ac4f20.png",
+  "datePublished": "2026-11-04T08:04:24.000Z",
+  "dateModified": "2026-11-06T06:32:16.169Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "LuoDZ",
+      "url": "https://Dingzhi225.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/DZ.png"><link rel="canonical" href="https://dingzhi225.github.io/2026/11/04/agents/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"NOY7M16K2P","apiKey":"053b7b6b2a790ea0c2b4f9c9874115b3","indexName":"search","hitsPerPage":6,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，耗时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'AI Agent 气象科研实践基础',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><style>
+  .algolia-poweredBy {
+    display: none !important;
+  }
+
+  /* 增大文章正文字体 */
+  #article-container {
+    font-size: 16px;
+  }
+</style>
+<meta name="generator" content="Hexo 7.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (false) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/resume/"><i class="fa-fw fas fa-graduation-cap"></i><span> 简历</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tag"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/live/"><i class="fa-fw fas fa-bell"></i><span> 动态</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-camera"></i><span> 图库</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-earth"></i><span> 导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-circle-info"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(https://i.imgs.ovh/2026/11/06/ae8e08be419b35541b69c71a02ac4f20.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">DZ Studio</span></a><a class="nav-page-title" href="/"><span class="site-name">AI Agent 气象科研实践基础</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/resume/"><i class="fa-fw fas fa-graduation-cap"></i><span> 简历</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tag"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/live/"><i class="fa-fw fas fa-bell"></i><span> 动态</span></a></div><div class="menus_item"><a class="site-page" href="/gallery/"><i class="fa-fw fas fa-camera"></i><span> 图库</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-earth"></i><span> 导航</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-circle-info"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">AI Agent 气象科研实践基础</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-11-04T08:04:24.000Z" title="发表于 2026-11-04 16:04:24">2026-11-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-11-06T06:32:16.169Z" title="更新于 2026-11-06 14:32:16">2026-11-06</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%99%BA%E8%83%BD%E4%BD%93%E5%BA%94%E7%94%A8/">智能体应用</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">5.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>17分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>现在可以用的 AI 智能体，或者说智能工作助手已经越来越丰富了，比如前面介绍过的 Claude code，还有 OpenAI 的Codex，腾讯的 workbuddy 等。他们安装和配置都很方便，能力上各有优势，可以彼此搭配起来用。后面就不再长文介绍安装和配置方法了，今天来简单梳理一下我学到的关于 AI Agent 的概念和关键应用。</p>
+<h1 id="AI-Agent-基础应用"><a href="#AI-Agent-基础应用" class="headerlink" title="AI Agent 基础应用"></a>AI Agent 基础应用</h1><p>Agent 模式（自主编程+自动运行+闭环验证）</p>
+<ul>
+<li>能够在工作区内操作</li>
+<li>能够自主编写程序，不断试错，运行验证</li>
+<li>自动测试和交付任务结果，无需手工搬运</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AI Agent = LLM + Harness</span><br></pre></td></tr></table></figure>
+
+<h2 id="关键概念梳理"><a href="#关键概念梳理" class="headerlink" title="关键概念梳理"></a>关键概念梳理</h2><ul>
+<li>命令行界面 （CLI）：在终端中输入命令与计算机交互的界面</li>
+<li>图形化用户界面 （GUI）：在系统桌面上使用图形化的窗口进行人机交互</li>
+<li>大语言模型 （LLM）：大语言模型主要预测下一个词语的概率分布<ul>
+<li>大语言模型已经拥有足够的训练数据，智慧水平接近瓶颈，想要提升 LLM 的能力需要让 LLM 能够接触到工作区，配置好各类工具等 AI 基础设施</li>
+</ul>
+</li>
+<li>Tokenizer 编码：将原始文本编码为整数 ID 矩阵，并进行运算<ul>
+<li>词元（token）：模型处理文本的最小单元，上下文、开销等通过 token 计量</li>
+<li>不要直接将大量的数据文件直接交给 Agent 处理，避免让模型直接参与数据的“心算”的任务，让模型通过编程来解决类似问题</li>
+</ul>
+</li>
+<li>深度思考 （Reasoning）：模型不是直接通过一次前向传播输出答案，而是建立思考链，在回答问题过程中拆解问题、调用工具、尝试解答、自我对话反思和验证、自我纠错、动态调整策略等，提升解决复杂任务的准确性</li>
+<li>上下文 （context）：本次任务判断所需的信息集合，包含系统指令和项目说明，必要的对话历史，已读取的项目材料，工具返回结果（工具或编程程序的运行结果），当前用户新输入指令</li>
+<li>上下文窗口（context window）：工作台容量上限，决定单词会话最多容纳信息，包括历史记录和输入材料等，突破上限后继续运行，重要信息可能被忽略，时间开销会增加。通过独立开始新会话或压缩上下文等方式防止溢出<ul>
+<li>单次输出上限：单次回复最多的内容，一般远小于上下文窗口</li>
+</ul>
+</li>
+<li>项目级规划文件：CLAUDE.md 或 AGENTS.md 文件，适用于 AI Agent 的规则和说明文本，在项目或全局（所有项目）中规范和约束 Agent 的行为，</li>
+<li>跨会话项目交接： Agent 有上下文窗口限制，一般需要通过开启新会话来继续执行任务，但新会话上下文清空，这时需要文档来保存任务执行关键信息。<ul>
+<li>Andrej Karpathy 提出的大模型项目知识库（LLM-wiki） 与任务进程（PROGRESS.md），让模型能够在关闭窗口前自动更新项目知识库和交接日志，保存在硬盘上，当创建新的会话后，能够快速学习项目内容和进程并继续推进新的任务</li>
+</ul>
+</li>
+<li>检索增强生成 （RAG）：长文档的精准匹配机制，避免文档全文遍历，而是制作全文目录索引的方式，让模型精准匹配信息，并放入到 context，模型根据节选信息回答，节省 context window 占用、token和时间的开销</li>
+<li>提示词 （prompt）：结构化指令包含背景依据、具体任务、交付规范<ul>
+<li>前台用户提示词：你在对话框中直接告诉模型的信息</li>
+<li>后台系统提示词：预设提示词，例如定义模型的身份，每一个新会话启动都会自动输入</li>
+</ul>
+</li>
+<li>工具 （tool）：包含运行框架（Harness）和工具函数（tool function），让模型能够动手操作<ul>
+<li>完整执行链路：框架自动挂载自带的工具+模型输出调用请求+平台执行工具函数+结果返回模型</li>
+<li>tool 一般由模型自主选择使用，当用户提问后，工具的定义会自动输入给 LLM，用户无需手动详细指定</li>
+</ul>
+</li>
+<li>模型上下文协议（MCP）：连接 Agent 与外部平台的接口，让模型能够通过该接口调用外部服务，完成当前任务<ul>
+<li>提示：MCP 可以提高模型能力和效率，但开启过多的 MCP 服务反而影响质量，占用上下文窗口，因此 MCP 服务和其他工具需要按需挂载，避免功能重叠干扰或者误触发</li>
+</ul>
+</li>
+<li>技能 （skill）：模块化的 prompt，以 SKILL.md 为核心入口，保存特定任务的执行步骤、核验标准和配套资源，相当于为 Agents 提供了专业技能书，在通用能力基础上增加了专有的能力<ul>
+<li>skill 不一定要自己写，可以从网络上获取，也可以让 Agents 根据当前工作方式制作一份 skill</li>
+<li>将常用的工作或流程总结为一个 skill 可以不让 AI 再次探索同一个任务的完成方法，也不用每一次在项目规划文件中再次声明，显著减少 token 和时间的开销</li>
+</ul>
+</li>
+<li>定时任务触发器：在日常办公中常用，在固定时间触发特定任务，办公类 Agent，例如腾讯workbuddy ，可以很方便的设置定时任务，比较常用</li>
+</ul>
+<p><img src="https://i.imgs.ovh/2026/11/06/ae8e08be419b35541b69c71a02ac4f20.png"></p>
+<h2 id="AI-Agent-的规范使用提示"><a href="#AI-Agent-的规范使用提示" class="headerlink" title="AI Agent 的规范使用提示"></a>AI Agent 的规范使用提示</h2><h3 id="核心步骤"><a href="#核心步骤" class="headerlink" title="核心步骤"></a>核心步骤</h3><ol>
+<li>任务说明</li>
+<li>读取文件</li>
+<li>制定步骤</li>
+<li>执行工具</li>
+<li>核验结果</li>
+</ol>
+<h3 id="建立高性价比的模型工作流"><a href="#建立高性价比的模型工作流" class="headerlink" title="建立高性价比的模型工作流"></a>建立高性价比的模型工作流</h3><ol>
+<li>顶层规划与追问：在任务开始执行前，模型根据任务说明，使用只读的 Plan 模式，用高推理强度的模型（例如DeepSeek V4 Pro）了解任务和项目大致情况，之后向用户发问（可以使用 <a target="_blank" rel="noopener" href="https://github.com/mattpocock/skills">grill-me</a>），确定关键细节，制定严密计划，澄清边界</li>
+<li>代码编写与工具执行：用轻量级模型（例如DeepSeek V4 Flash）执行代码改写和测试</li>
+<li>最终把关检查与验收：用高推理强度的模型进行回顾和把关，可以使用其他的旗舰模型进行交叉检验，并交付验收结果</li>
+</ol>
+<h3 id="将项目任务结构化"><a href="#将项目任务结构化" class="headerlink" title="将项目任务结构化"></a>将项目任务结构化</h3><p>应用软件开发项目的习惯，一个复杂的任务分为多个模块，建议使用 git 进行版本管理，例如一个 Python 语言为基础的项目可以这样组织</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Project_name/</span><br><span class="line">├── README.md                 # 项目说明文档</span><br><span class="line">├── AGENTS.md                 # 项目规划守则，作为项目关键提示词</span><br><span class="line">├── requirements.txt          # Python依赖目录，其他语言项目同理</span><br><span class="line">├── .gitignore                # 声明 git 忽略的文件</span><br><span class="line">├── .git/                     # git目录，git init 后自动生成</span><br><span class="line">├── .venv/                    # 项目虚拟环境</span><br><span class="line">├── data/                     # 数据</span><br><span class="line">├── src/                      # 核心源代码</span><br><span class="line">├── tests/                    # 测试代码和测试结果</span><br><span class="line">├── tools/                    # 运行和测试项目的工具，shell脚本等</span><br><span class="line">├── outputs/                  # 代码运行输出结果</span><br><span class="line">├── logs/                     # 代码运行日志</span><br><span class="line">└── agent_workspace/          # （可选）划分n专属于 Agent 的工作区，根据自己的需求安排，可以暂存临时文件或做小型测试</span><br><span class="line">    ├── output/               # 保存 Agent 产出的成果</span><br><span class="line">    ├── tmp/                  # 暂存临时文件</span><br><span class="line">    ├── logs/                 # Agent 工作日志</span><br><span class="line">    └── PROGRESS.md           # （超长任务建议用）Agent 工作进程</span><br></pre></td></tr></table></figure>
+<p>这里提供一个大致思路，实际组织方式需要根据你的项目实际情况而定</p>
+<h3 id="5-步骤的模型验收清单"><a href="#5-步骤的模型验收清单" class="headerlink" title="5 步骤的模型验收清单"></a>5 步骤的模型验收清单</h3><p>任务完成后让模型返回，最好写入日志</p>
+<ol>
+<li>用户的需求，重复一遍</li>
+<li>关键的工具执行记录</li>
+<li>输出文件与修改摘要</li>
+<li>实际验证和测试结果，声明参与验证的数据边界</li>
+<li>尚未完成或尚未验证的项目</li>
+</ol>
+<p>所有结果必须有可追溯的来源，必须有数据和日志的支持</p>
+<h3 id="Agent-工作组织方式的自由组合"><a href="#Agent-工作组织方式的自由组合" class="headerlink" title="Agent 工作组织方式的自由组合"></a>Agent 工作组织方式的自由组合</h3><ol>
+<li>单Agent VS 多 Agent协作</li>
+<li>固定工作流 VS 模型动态自主决策</li>
+<li>边想边干 VS 规划再执行</li>
+</ol>
+<h3 id="选Agent-的考虑要点"><a href="#选Agent-的考虑要点" class="headerlink" title="选Agent 的考虑要点"></a>选Agent 的考虑要点</h3><p>目前主流的 Agent 在以下方面基本都表现的不错，但也有差异需要用户权衡</p>
+<ol>
+<li>工具调用成功率：模型会通过输出结构化数据来实现工具调用。是否会出现错误调用工具或调用不存在的工具</li>
+<li>任务一次通过率：模型编程后，进行测试，能否一次就成功</li>
+<li>材料类型与长文抗噪：当模型阅读了大量的文档、代码、日志后能否精确定位关键信息和问题</li>
+<li>端到端完成时间：一次任务，Agent 会反复调用模型API，单次首字延迟（TTFT）和吐字速度（TPS）直接决定任务总时长</li>
+<li>单次任务成本：跑通整个任务的账单</li>
+<li>部署与合规条件，是否包含保密信息，保密信息不要连接公网 API，在内网单独部署模型</li>
+</ol>
+<h3 id="复杂任务的智能体团队协作"><a href="#复杂任务的智能体团队协作" class="headerlink" title="复杂任务的智能体团队协作"></a>复杂任务的智能体团队协作</h3><ul>
+<li>主从派发：设计子智能体（sub agent），每个智能体有独特的 Harness 和 context window<ul>
+<li>对话中自动主动派发，分工协作，例如 Codex，在大的项目代码中，每个 Agent 分别检查和修改特定的模块，彼此相互通讯和协作</li>
+<li>很多简单的任务单个智能体就可以完成，多智能体 token 开销会增大</li>
+</ul>
+</li>
+<li>角色分工：手动定制不同领域的专家智能体，每个智能体有各自的专长<ul>
+<li>例如 workbuddy 或 OpenClaw，可以为每个智能体绑定专属提示词和工具，创建不同角色，例如科学计算编程专家、文献调研专家、项目审查者、前端开发专家、后端开发专家等</li>
+</ul>
+</li>
+</ul>
+<h3 id="大文件处理思路"><a href="#大文件处理思路" class="headerlink" title="大文件处理思路"></a>大文件处理思路</h3><p>例如 Excel 表文件，或者其他很长但具有规律的文件</p>
+<ol>
+<li>不要让模型直接参与处理大量数据，这不仅浪费 token，还很容易出错</li>
+<li>可以让模型只看“表头或前几行案例和记录”</li>
+<li>让模型编写程序或使用本地确定性的自动化程序（如 Python 脚本等）处理全部数据</li>
+<li>只把程序运行最终结果返回上下文，而不是把全部数据填充到上下文</li>
+</ol>
+<h3 id="持续工作与无人值守"><a href="#持续工作与无人值守" class="headerlink" title="持续工作与无人值守"></a>持续工作与无人值守</h3><ol>
+<li>大型课题断点续传：在项目空间内，每次 Agent 收工前将已确认分支和待办写入 PROGRESS.md ，次日新开任务直接读取该文件，恢复上下文并继续任务</li>
+<li>本地脚本定时运行：始终在本机上运行，本机关机或 Agent 客户端界面关闭则不会运行</li>
+<li>云端服务汇总：Github 仓库、在线文档等云端信息的定时抓取、汇总、整理，并制作报告，或通过邮件、飞书等方式发送给用户</li>
+</ol>
+<h3 id="通用与专用Agent"><a href="#通用与专用Agent" class="headerlink" title="通用与专用Agent"></a>通用与专用Agent</h3><ol>
+<li>通用&#x2F;多用途：资料整理，数据分析，编程与文件处理等</li>
+<li>专用&#x2F;垂直 Agent，例如气象观测数据质控，气象预报检验等 Agent，可以自己设计和创建。例如，字节跳动 Coze 平台是目前国内常用的智能体开发平台，可以在该平台创建自己需要的 Agent</li>
+</ol>
+<p>常见的通用 Agent：Claude code，Codex，workbuddy，OpenClaw 等，可以根据需要自由配置 LLM</p>
+<h1 id="AI-Agent入门实战案例"><a href="#AI-Agent入门实战案例" class="headerlink" title="AI Agent入门实战案例"></a>AI Agent入门实战案例</h1><h2 id="示例一：高质量检索和精读论文"><a href="#示例一：高质量检索和精读论文" class="headerlink" title="示例一：高质量检索和精读论文"></a>示例一：高质量检索和精读论文</h2><p>Agent 可以高效检索论文，节省科研时间</p>
+<p>思路：什么主题？什么时候发布？来源是否可靠？</p>
+<p>项目目录结构</p>
+<ul>
+<li><code>papers/</code>：5 篇原始 PDF。</li>
+<li><code>文献总结Word/</code>：5 份逐篇双语结构化报告和 1 份综合进展报告。</li>
+<li><code>references.csv</code>：题名、作者、年份、期刊、DOI、链接、页数和 SHA-256。</li>
+<li><code>search_log.md</code>：检索策略、候选筛选、排除原因和不确定性。</li>
+<li><code>PROMPT.md</code>：可直接布置给 Agent 的专业提示词。</li>
+<li><code>qa_report.md</code>：最终验收证据。</li>
+<li><code>source_research/</code>：全文抽取文本、逐篇证据笔记和原始研究清单，供复核。</li>
+<li><code>src/build_word_reports.py</code>：从已核验笔记重新生成 Word 的脚本。</li>
+</ul>
+<p>以下为PROMPT.md 提示词：供Agent直接阅读，这里提供一个示例，你可以直接抄作业，也可以根据自己的实际情况进行修改。例如文中使用多 Agents 并进行了分工。如果你不具备多 Agents 运行的条件，你可以删除分工过程的提示词</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">【角色】</span><br><span class="line">你是强降水、雷达临近预报、数值天气预报和气象人工智能交叉方向的研究员，同时承担系统检索、全文精读、双语科技写作和质量审查职责。</span><br><span class="line">【目标】</span><br><span class="line">检索并严选 5 篇 2025–2026 年关于 AI 与暴雨、强降水或极端降水预报的最新高质量研究；若全文与质量不足，可放宽至 2024–2026 年。下载合法开放获取 PDF，逐篇全文精读，并为每篇生成独立的中英双语 Word 报告。</span><br><span class="line">【主题范围】</span><br><span class="line"><span class="bullet">-</span> AI/机器学习的暴雨、强降水和极端降水预报。</span><br><span class="line"><span class="bullet">-</span> 雷达临近预报、短时强降水订正、高分辨率区域 AI 预报和概率集合预报均可。</span><br><span class="line"><span class="bullet">-</span> 论文必须以强降水为核心问题或核心评估对象；仅顺带出现降水的通用 AI 天气模型不入选。</span><br><span class="line">【检索与筛选约束】</span><br><span class="line"><span class="bullet">1.</span> 先检索 Crossref、arXiv、出版社页面等可追溯来源，再以 DOI 和题名去重；期刊版优先于预印本。</span><br><span class="line"><span class="bullet">2.</span> 按相关性、方法质量、发表时间、全文可得性综合筛选，不以“最新”等同于“最好”。</span><br><span class="line"><span class="bullet">3.</span> 仅下载作者或出版社合法开放的全文；付费墙不可绕过。</span><br><span class="line"><span class="bullet">4.</span> 每篇必须核实题名、作者、年份、期刊、DOI、稳定链接、PDF 页数和 SHA-256。</span><br><span class="line"><span class="bullet">5.</span> 读不到完整正文、PDF 无法打开或关键结果无法定位的论文不得进入最终 5 篇。</span><br><span class="line">【逐篇报告固定结构】</span><br><span class="line"><span class="bullet">6.</span> 书目信息。</span><br><span class="line"><span class="bullet">7.</span> 通俗语言总结：说明论文到底解决什么实际问题，不堆术语。</span><br><span class="line"><span class="bullet">8.</span> 背景与挑战：主要依据引言，说明已有方法为什么不够。</span><br><span class="line"><span class="bullet">9.</span> 数据：来源、时空范围、分辨率、样本划分、输入变量和预处理。</span><br><span class="line"><span class="bullet">10.</span> 方法：模型架构、输入时间窗、输出变量、预报时效、损失函数和基线。</span><br><span class="line"><span class="bullet">11.</span> 结果：给出作者报告的关键定量结果，并注明页码、图号或表号。</span><br><span class="line"><span class="bullet">12.</span> 结论：区分作者结论与审阅者解释。</span><br><span class="line"><span class="bullet">13.</span> 局限性：区域、样本、指标、基线、可复现性和业务推广边界。</span><br><span class="line"><span class="bullet">14.</span> 证据定位：列出关键陈述对应的 PDF 页码、图表或章节。</span><br><span class="line"></span><br><span class="line">【双语与 Word 规范】</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 每一主题先写 English 段，再写中文对应段；中英文含义必须一致。</span><br><span class="line"><span class="bullet">-</span> 正文中文使用宋体小四号，1.25 倍行距；标题可分级加粗放大。</span><br><span class="line"><span class="bullet">-</span> 每篇论文生成一个独立 DOCX，文件名按论文题名命名；另生成一份 5 篇综合进展报告。</span><br><span class="line"><span class="bullet">-</span> Word 必须在生成后逐页渲染或在 Microsoft Word 中目视检查，无截断、重叠、缺字或坏表格。</span><br><span class="line">【多 Agent 分工】</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> Agent A（检索）：设计检索式、跨源检索、DOI 去重、候选排序和排除记录。</span><br><span class="line"><span class="bullet">-</span> Agent B（全文）：下载并核验 5 篇 PDF，提取全文，记录页码与哈希。</span><br><span class="line"><span class="bullet">-</span> Agent C（精读）：逐篇按固定结构生成英中双语证据笔记，不夸大作者结论。</span><br><span class="line"><span class="bullet">-</span> Agent D（文档）：将已核验笔记排版为独立 Word 和综合报告。</span><br><span class="line"><span class="bullet">-</span> Agent E（审查）：独立检查 DOI、PDF、关键数字、英中一致性、宋体小四、1.25 倍行距和目录完整性。</span><br><span class="line"><span class="bullet">-</span> 主 Agent：维护统一字段和文件接口，处理冲突，最终按证据给出 PASS/FAIL。</span><br><span class="line">【必交付文件】</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> papers/：5 篇可打开的 PDF 原文。</span><br><span class="line"><span class="bullet">-</span> 文献总结Word/：5 篇独立 DOCX 和 1 份综合进展 DOCX。</span><br><span class="line"><span class="bullet">-</span> references.csv：完整元数据、URL、页数和 SHA-256。</span><br><span class="line"><span class="bullet">-</span> search<span class="emphasis">_log.md：检索式、日期范围、候选、排除理由和不确定性。</span></span><br><span class="line"><span class="emphasis">- PROMPT.md 与 README.md。</span></span><br><span class="line"><span class="emphasis">- qa_</span>report.md：逐项验收和可复核证据。</span><br><span class="line"></span><br><span class="line">【验收标准】</span><br><span class="line"></span><br><span class="line"><span class="bullet">1.</span> 最终恰有 5 篇论文，年份位于 2024–2026，优先 2025–2026；5 个 PDF 均能被 pdfinfo 打开。</span><br><span class="line"><span class="bullet">2.</span> references.csv 中 5 条 DOI、URL、页数、文件名和 SHA-256 与本地文件一致。</span><br><span class="line"><span class="bullet">3.</span> 5 份逐篇 Word 文件名对应论文题名，均包含通俗总结、背景与挑战、数据、方法、结果、结论、局限性和证据定位。</span><br><span class="line"><span class="bullet">4.</span> 每个主题英文在前、中文在后；关键数字可在指定页码或图表回查。</span><br><span class="line"><span class="bullet">5.</span> Word 正文宋体小四、1.25 倍行距；逐页检查无版式缺陷。</span><br><span class="line"><span class="bullet">6.</span> 综合报告必须比较五篇论文的研究尺度、数据、方法、关键结果和共同局限。</span><br><span class="line"><span class="bullet">7.</span> 预印本/期刊版重复、不可获取全文和弱相关候选必须在 search<span class="emphasis">_log.md 中说明。</span></span><br><span class="line"><span class="emphasis">8. 任一论文真实性、全文证据或文档结构未通过时，最终结论必须为 FAIL，修复后重新验收。</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">【最终回报格式】</span></span><br><span class="line"><span class="emphasis">回报入选五篇题名、年份、期刊和 DOI；列出 PDF、Word、references.csv、search_</span>log.md 与 qa<span class="emphasis">_report.md 路径；说明验收命令、通过项和仍存局限。不得以“应该正确”替代实际检查。</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="示例二：获取-ERA-5-再分析数据并绘图完整流程"><a href="#示例二：获取-ERA-5-再分析数据并绘图完整流程" class="headerlink" title="示例二：获取 ERA-5 再分析数据并绘图完整流程"></a>示例二：获取 ERA-5 再分析数据并绘图完整流程</h2><p>输入：数据源（在哪里下载？），请求规格（何时起报？空间范围？物理量？），物理量预处理规范（单位转换？），交付方式（原始数据？图片？）</p>
+<p>PROMPT.md 提示词：供Agent直接阅读</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">【角色】</span><br><span class="line">你是兼具气象数据工程、Python 科研绘图和质量保证能力的资深研究工程师。你必须交付可在 macOS/Linux Zsh 中一键复现的完整实践，不得使用伪数据、示例数组或 mock 文件。</span><br><span class="line"></span><br><span class="line">【目标】</span><br><span class="line">获取 2024-07-01 00 UTC 的 ERA5 0.25° 全球 500 hPa 位势和海平面气压，绘制 Z500 与 MSL 2×1 双面板全球地图，并交付一键脚本、真实数据、图件、元数据和审核报告。</span><br><span class="line"></span><br><span class="line">【固定输入】</span><br><span class="line"><span class="bullet">-</span> 时次：2024-07-01 00 UTC。</span><br><span class="line"><span class="bullet">-</span> 区域/分辨率：全球，0.25°（721×1440）。</span><br><span class="line"><span class="bullet">-</span> 变量：500 hPa geopotential；mean sea level pressure。</span><br><span class="line"><span class="bullet">-</span> 语言与绘图后端：Python，xarray + Cartopy + Matplotlib。</span><br><span class="line"></span><br><span class="line">【不可变更的科学与工程约束】</span><br><span class="line"><span class="bullet">1.</span> Z500 必须按 ERA5 z / 9.80665 转为 gpm；MSL 必须按 msl / 100 转为 hPa。</span><br><span class="line"><span class="bullet">2.</span> 投影必须为 Robinson(central<span class="emphasis">_longitude=180)；绘图 transform 必须为 PlateCarree。</span></span><br><span class="line"><span class="emphasis">3. 必须显式添加循环经度点，并检查 0°/360° 处无白缝。</span></span><br><span class="line"><span class="emphasis">4. 数据优先通过 Copernicus CDS 官方 API 获取；本机没有 CDS token 时，自动退回到匿名 Google ARCO-ERA5。不在日志中打印 token、认证 URL 或完整异常中的敏感信息。</span></span><br><span class="line"><span class="emphasis">5. 图中必须包含海岸线、经纬网、单位、UTC 时次和数据来源；白色背景，文字≥7 pt，面板标记 a/b 加粗且≥8 pt。</span></span><br><span class="line"><span class="emphasis">6. 同时导出 300 dpi PNG 和矢量 PDF。</span></span><br><span class="line"><span class="emphasis">7. run.sh 使用 `set -Eeuo pipefail`，自动创建隔离虚拟环境、安装依赖、下载/复用数据、绘图和质检；重复运行必须幂等。</span></span><br><span class="line"><span class="emphasis">8. 必须亲自完整运行流程，不得只交付未测试代码。</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">【多 Agent 分工】</span></span><br><span class="line"><span class="emphasis">- Agent A（数据工程）：实现 CDS 优先/ARCO 备选下载、数据标准化、NetCDF 写出和数值检查。</span></span><br><span class="line"><span class="emphasis">- Agent B（科研绘图）：依据固定投影、单位和出版规范制图，检查循环经度和标注。</span></span><br><span class="line"><span class="emphasis">- Agent C（QA）：独立验证网格、时次、有限值、物理范围、DPI、PDF 头、哈希和交付物完整性。</span></span><br><span class="line"><span class="emphasis">- 主 Agent：锁定契约，处理集成，运行 run.sh，最终只以可复核证据判定 PASS/FAIL。</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">【必交付的目录与文件】</span></span><br><span class="line"><span class="emphasis">- README.md：环境、命令、科学口径、输出和限制。</span></span><br><span class="line"><span class="emphasis">- PROMPT.md：本专业任务提示词。</span></span><br><span class="line"><span class="emphasis">- requirements.txt：可复现依赖。</span></span><br><span class="line"><span class="emphasis">- run.sh：一键入口。</span></span><br><span class="line"><span class="emphasis">- src/download_</span>era5.py 与 src/plot<span class="emphasis">_global.py（可另加 qa.py）。</span></span><br><span class="line"><span class="emphasis">- data/*.nc：已实际下载的真实 ERA5。</span></span><br><span class="line"><span class="emphasis">- outputs/*.png 和 outputs/*.pdf。</span></span><br><span class="line"><span class="emphasis">- metadata/manifest.json：来源、时次、网格、转换、min/max、字节数与 SHA-256。</span></span><br><span class="line"><span class="emphasis">- logs/run.log：本次完整运行日志，凭证必须脱敏。</span></span><br><span class="line"><span class="emphasis">- qa_</span>report.md：逐项验收及真实证据。</span><br><span class="line"></span><br><span class="line">【验收标准】</span><br><span class="line"><span class="bullet">1.</span> <span class="code">`./run.sh`</span> 退出码为 0，紧接着第二次运行也为 0且复用有效数据。</span><br><span class="line"><span class="bullet">2.</span> NetCDF 可打开；尺寸为 721×1440；经纬间距 0.25°；无 NaN/Inf；时次精确。</span><br><span class="line"><span class="bullet">3.</span> Z500 和 MSL 的 min/max 在合理物理范围内，并与 manifest/qa<span class="emphasis">_report 一致。</span></span><br><span class="line"><span class="emphasis">4. PNG 实际具有约 300 dpi 元数据；PDF 文件头正确；两者非空且有 SHA-256。</span></span><br><span class="line"><span class="emphasis">5. 人工视觉检查确认无经度接缝、没有裁切标注，投影/单位/来源/时次正确。</span></span><br><span class="line"><span class="emphasis">6. 任一强制项不满足时结论必须为 FAIL，修复并重跑后才能交付。</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">【最终回报格式】</span></span><br><span class="line"><span class="emphasis">仅在完成真实运行和验收后，回报：运行命令、获取路由、数据大小和 SHA-256、Z500/MSL min-max、PNG/PDF 路径与哈希、QA 结论和已知风险。不得用“应该成功”、“预计正常”等推测性表述代替证据。</span></span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://Dingzhi225.github.io">LuoDZ</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://dingzhi225.github.io/2026/11/04/agents/">https://dingzhi225.github.io/2026/11/04/agents/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://Dingzhi225.github.io" target="_blank">DZ Studio</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/AI-Agent/">AI Agent</a></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/09/12/markdown/" title="Markdown，让交互精简且高效"><img class="cover" src="https://bee-reg-ab.imagency.cn/mr/3004/26/11cda97e6af907b5b2158e1dd78bdd6a.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Markdown，让交互精简且高效</div></div><div class="info-2"><div class="info-item-1">Markdown 简介Markdown 是一种轻量的标记语言，学习门槛很低（30 分钟基本可以速通），易读易写，信息密集且传递效率高。 编辑者可以专注内容而非纠结排版，排版和美化设计可以在 Markdown 格式的基础上进一步设计，实现编辑和呈现工作分离。举个例子，本站所有博客均使用 Markdown 编写的，并非直接编辑 HTML&#x2F;CSS，通过提前设计好渲染的模板对 Markdown 格式的推文进行渲染，呈现出现在看到的界面。再举个例子，Obsidian 笔记软件，每篇笔记也是使用 Markdown 编写的 更重要的是，Markdown 凭借其渲染少，易读性好，信息密度高的特征，也成为了人与 AI 的主要交互语言之一，很多 AI 模型也是基于 Markdown 信息进行训练的，因此，学会使用 Markdown 可以提高你的 AI 助手的工作效率，还能节约 token，降低 AI 工作成本  快速入门：Markdown官方教程  Markdown 和 docx，PDF 的对比再举个例子说明下 Markdown 的好处 在我们日常工作中，不论是写报告、写论文，基本都离不开...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/08/18/cc-switch/" title="多 Agent和多 LLM 的管理——CC-Switch的使用"><img class="cover" src="https://bee-reg-ab.imagency.cn/p/5264a4ffa5ad2aa7e3d29a495ec4b047.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-18</div><div class="info-item-2">多 Agent和多 LLM 的管理——CC-Switch的使用</div></div><div class="info-2"><div class="info-item-1">简介上一篇文章 Claude Code + Deepseek-V4 + VScode开发环境搭建 已经介绍如何给自己的电脑搭配 Claude code 智能体（Agent），并配置 DeepSeek 大语言模型（LLM）。 然而，这些方法对于新手不友好的地方在于，需要自己手动操作命令、编辑配置文件实现配置，并且如果想要配置其他 LLM ，又需要手动修改文件，并不便捷 因此，本文推荐一款图形化操作的智能体管理工具——CC-Switch 以下是他的相关资源：  Github: https://github.com/farion1231/cc-switch 中文官方网站&#x2F;GUI下载: https://www.ccswitch.io/zh/ Runoob 入门教程: https://www.runoob.com/vibe-coding/cc-switch.html  该应用兼容 Windows、 macOS和 Linux 多个操作系统 开始之前 你已经拥有至少一个 AI agent（如 Claude code，codex） 拥有至少一个 LLM （如 DeepSeek、doub...</div></div></div></a><a class="pagination-related" href="/2026/08/19/mcp/" title="MCP 协议入门"><img class="cover" src="https://bee-reg-ab.imagency.cn/p/1f2734017d86059d027c0b550a5d6ec4.jpeg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-19</div><div class="info-item-2">MCP 协议入门</div></div><div class="info-2"><div class="info-item-1">MCP 介绍模型上下文协议（Model Context Protocol，MCP）是一种标准化的开放协议，用于实现大语言模型（LLM）和外部数据源、工具、服务的集成，LLM 可凭借 MCP 协议调用外部资源和工具，类似人们访问互联网所需的超文本传输协议（HTTP） 学习更多 https://www.runoob.com/vibe-coding/mcp-usage.html MCP 架构 （引用自Runoob）MCP 的架构由四个关键部分组成：  主机（Host）：主机是期望从服务器获取数据的人工智能应用，例如一个集成开发环境（IDE）、聊天机器人等。主机负责初始化和管理客户端、处理用户授权、管理上下文聚合等。 客户端（Client）：客户端是主机与服务器之间的桥梁。它与服务器保持一对一的连接，负责消息路由、能力管理、协议协商和订阅管理等。客户端确保主机和服务器之间的通信清晰、安全且高效。 服务器（Server）：服务器是提供外部数据和工具的组件。它通过工具、资源和提示模板为大型语言模型提供额外的上下文和功能。例如，一个服务器可以提供与Gmail、Slack等外部服务的API调用。...</div></div></div></a><a class="pagination-related" href="/2026/07/09/claude-code/" title="Claude Code + Deepseek-V4 + VScode开发环境搭建"><img class="cover" src="https://bee-reg-ab.imagency.cn/e/bc6cbb00ee43d62f131077eff84d4576.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-09</div><div class="info-item-2">Claude Code + Deepseek-V4 + VScode开发环境搭建</div></div><div class="info-2"><div class="info-item-1">开始之前 博主开发环境在“适用于Linux的Windows子系统”（WSL）和 MacOS上，WSL使用的 Linux 发行版为Ubuntu 22.04 LTS，对于WSL，Microsoft官方提供了详细的教程：https://learn.microsoft.com/zh-cn/windows/wsl/。   MacOS 操作系统作为类 Unix 操作系统，操作方式与 Linux 很接近。本文主要侧重前两者环境下的 Claude code的配置和安装，Windows也会适当介绍，它与前两者流程基本一致但具体操作方法有些不同，详细内容可参考官方文档 https://code.claude.com/docs/en/overview#native-install-recommended   你已经获取了Deepseek的官方应用程序接口（API），如果没有，请访问 https://platform.deepseek.com/usage ，按照官网要求获取API并充值。  电脑上已经安装了VS code，如果没有，上官网可以快速安装。   快速开始本次安装的是命令行界面（CLI）版本的...</div></div></div></a><a class="pagination-related" href="/2026/09/12/markdown/" title="Markdown，让交互精简且高效"><img class="cover" src="https://bee-reg-ab.imagency.cn/mr/3004/26/11cda97e6af907b5b2158e1dd78bdd6a.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-09-12</div><div class="info-item-2">Markdown，让交互精简且高效</div></div><div class="info-2"><div class="info-item-1">Markdown 简介Markdown 是一种轻量的标记语言，学习门槛很低（30 分钟基本可以速通），易读易写，信息密集且传递效率高。 编辑者可以专注内容而非纠结排版，排版和美化设计可以在 Markdown 格式的基础上进一步设计，实现编辑和呈现工作分离。举个例子，本站所有博客均使用 Markdown 编写的，并非直接编辑 HTML&#x2F;CSS，通过提前设计好渲染的模板对 Markdown 格式的推文进行渲染，呈现出现在看到的界面。再举个例子，Obsidian 笔记软件，每篇笔记也是使用 Markdown 编写的 更重要的是，Markdown 凭借其渲染少，易读性好，信息密度高的特征，也成为了人与 AI 的主要交互语言之一，很多 AI 模型也是基于 Markdown 信息进行训练的，因此，学会使用 Markdown 可以提高你的 AI 助手的工作效率，还能节约 token，降低 AI 工作成本  快速入门：Markdown官方教程  Markdown 和 docx，PDF 的对比再举个例子说明下 Markdown 的好处 在我们日常工作中，不论是写报告、写论文，基本都离不开...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">LuoDZ</div><div class="author-info-description">不要停止探索的脚步</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/dingzhi225"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/dingzhi225" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:dingzhi0824@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的个人工作室，
+如果浏览过程中遇到问题或发现bug，请通过电子邮件反馈到 dingzhi0824@163.com
+</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#AI-Agent-%E5%9F%BA%E7%A1%80%E5%BA%94%E7%94%A8"><span class="toc-number">1.</span> <span class="toc-text">AI Agent 基础应用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E6%A6%82%E5%BF%B5%E6%A2%B3%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">关键概念梳理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AI-Agent-%E7%9A%84%E8%A7%84%E8%8C%83%E4%BD%BF%E7%94%A8%E6%8F%90%E7%A4%BA"><span class="toc-number">1.2.</span> <span class="toc-text">AI Agent 的规范使用提示</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.2.1.</span> <span class="toc-text">核心步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E9%AB%98%E6%80%A7%E4%BB%B7%E6%AF%94%E7%9A%84%E6%A8%A1%E5%9E%8B%E5%B7%A5%E4%BD%9C%E6%B5%81"><span class="toc-number">1.2.2.</span> <span class="toc-text">建立高性价比的模型工作流</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%86%E9%A1%B9%E7%9B%AE%E4%BB%BB%E5%8A%A1%E7%BB%93%E6%9E%84%E5%8C%96"><span class="toc-number">1.2.3.</span> <span class="toc-text">将项目任务结构化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%AD%A5%E9%AA%A4%E7%9A%84%E6%A8%A1%E5%9E%8B%E9%AA%8C%E6%94%B6%E6%B8%85%E5%8D%95"><span class="toc-number">1.2.4.</span> <span class="toc-text">5 步骤的模型验收清单</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Agent-%E5%B7%A5%E4%BD%9C%E7%BB%84%E7%BB%87%E6%96%B9%E5%BC%8F%E7%9A%84%E8%87%AA%E7%94%B1%E7%BB%84%E5%90%88"><span class="toc-number">1.2.5.</span> <span class="toc-text">Agent 工作组织方式的自由组合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%89Agent-%E7%9A%84%E8%80%83%E8%99%91%E8%A6%81%E7%82%B9"><span class="toc-number">1.2.6.</span> <span class="toc-text">选Agent 的考虑要点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E6%9D%82%E4%BB%BB%E5%8A%A1%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93%E5%9B%A2%E9%98%9F%E5%8D%8F%E4%BD%9C"><span class="toc-number">1.2.7.</span> <span class="toc-text">复杂任务的智能体团队协作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%A7%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86%E6%80%9D%E8%B7%AF"><span class="toc-number">1.2.8.</span> <span class="toc-text">大文件处理思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%81%E7%BB%AD%E5%B7%A5%E4%BD%9C%E4%B8%8E%E6%97%A0%E4%BA%BA%E5%80%BC%E5%AE%88"><span class="toc-number">1.2.9.</span> <span class="toc-text">持续工作与无人值守</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E7%94%A8%E4%B8%8E%E4%B8%93%E7%94%A8Agent"><span class="toc-number">1.2.10.</span> <span class="toc-text">通用与专用Agent</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#AI-Agent%E5%85%A5%E9%97%A8%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B"><span class="toc-number">2.</span> <span class="toc-text">AI Agent入门实战案例</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%B8%80%EF%BC%9A%E9%AB%98%E8%B4%A8%E9%87%8F%E6%A3%80%E7%B4%A2%E5%92%8C%E7%B2%BE%E8%AF%BB%E8%AE%BA%E6%96%87"><span class="toc-number">2.1.</span> <span class="toc-text">示例一：高质量检索和精读论文</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BA%8C%EF%BC%9A%E8%8E%B7%E5%8F%96-ERA-5-%E5%86%8D%E5%88%86%E6%9E%90%E6%95%B0%E6%8D%AE%E5%B9%B6%E7%BB%98%E5%9B%BE%E5%AE%8C%E6%95%B4%E6%B5%81%E7%A8%8B"><span class="toc-number">2.2.</span> <span class="toc-text">示例二：获取 ERA-5 再分析数据并绘图完整流程</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/11/04/agents/" title="AI Agent 气象科研实践基础"><img src="https://i.imgs.ovh/2026/11/06/ae8e08be419b35541b69c71a02ac4f20.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="AI Agent 气象科研实践基础"/></a><div class="content"><a class="title" href="/2026/11/04/agents/" title="AI Agent 气象科研实践基础">AI Agent 气象科研实践基础</a><time datetime="2026-11-04T08:04:24.000Z" title="发表于 2026-11-04 16:04:24">2026-11-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/09/12/markdown/" title="Markdown，让交互精简且高效"><img src="https://bee-reg-ab.imagency.cn/mr/3004/26/11cda97e6af907b5b2158e1dd78bdd6a.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Markdown，让交互精简且高效"/></a><div class="content"><a class="title" href="/2026/09/12/markdown/" title="Markdown，让交互精简且高效">Markdown，让交互精简且高效</a><time datetime="2026-09-12T03:04:26.000Z" title="发表于 2026-09-12 11:04:26">2026-09-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/08/19/mcp/" title="MCP 协议入门"><img src="https://bee-reg-ab.imagency.cn/p/1f2734017d86059d027c0b550a5d6ec4.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MCP 协议入门"/></a><div class="content"><a class="title" href="/2026/08/19/mcp/" title="MCP 协议入门">MCP 协议入门</a><time datetime="2026-08-19T13:02:51.000Z" title="发表于 2026-08-19 21:02:51">2026-08-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/08/18/cc-switch/" title="多 Agent和多 LLM 的管理——CC-Switch的使用"><img src="https://bee-reg-ab.imagency.cn/p/5264a4ffa5ad2aa7e3d29a495ec4b047.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="多 Agent和多 LLM 的管理——CC-Switch的使用"/></a><div class="content"><a class="title" href="/2026/08/18/cc-switch/" title="多 Agent和多 LLM 的管理——CC-Switch的使用">多 Agent和多 LLM 的管理——CC-Switch的使用</a><time datetime="2026-08-18T06:43:43.000Z" title="发表于 2026-08-18 14:43:43">2026-08-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/07/09/claude-code/" title="Claude Code + Deepseek-V4 + VScode开发环境搭建"><img src="https://bee-reg-ab.imagency.cn/e/bc6cbb00ee43d62f131077eff84d4576.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Claude Code + Deepseek-V4 + VScode开发环境搭建"/></a><div class="content"><a class="title" href="/2026/07/09/claude-code/" title="Claude Code + Deepseek-V4 + VScode开发环境搭建">Claude Code + Deepseek-V4 + VScode开发环境搭建</a><time datetime="2026-07-09T06:39:29.000Z" title="发表于 2026-07-09 14:39:29">2026-07-09</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://i.imgs.ovh/2026/11/06/ae8e08be419b35541b69c71a02ac4f20.png);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By LuoDZ</span></div><div class="footer_custom_text">Documentation licensed under CC BY 4.0.</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"><script>(() => {
+  const loadMathjax = () => {
+    if (!window.MathJax) {
+      window.MathJax = {
+        loader: {
+          load: [
+            // Four font extension packages (optional)
+            //- '[tex]/bbm',
+            //- '[tex]/bboldx',
+            //- '[tex]/dsfont',
+            '[tex]/mhchem'
+          ],
+          paths: {
+            'mathjax-newcm': '[mathjax]/../@mathjax/mathjax-newcm-font',
+
+            //- // Four font extension packages (optional)
+            //- 'mathjax-bbm-extension': '[mathjax]/../@mathjax/mathjax-bbm-font-extension',
+            //- 'mathjax-bboldx-extension': '[mathjax]/../@mathjax/mathjax-bboldx-font-extension',
+            //- 'mathjax-dsfont-extension': '[mathjax]/../@mathjax/mathjax-dsfont-font-extension',
+            'mathjax-mhchem-extension': '[mathjax]/../@mathjax/mathjax-mhchem-font-extension'
+          }
+        },
+        output: {
+          font: 'mathjax-newcm',
+        },
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          tags: 'none',
+          packages: {
+            '[+]': [
+              'mhchem'
+            ]
+          }
+        },
+        chtml: {
+          scale: 1.1
+        },
+        options: {
+          enableMenu: true,
+          menuOptions: {
+            settings: {
+              enrich: false  // Turn off Braille and voice narration text automatic generation
+            }
+          },
+          renderActions: {
+            findScript: [10, doc => {
+              for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+                const display = !!node.type.match(/; *mode=display/)
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+                const text = document.createTextNode('')
+                node.parentNode.replaceChild(text, node)
+                math.start = {node: text, delim: '', n: 0}
+                math.end = {node: text, delim: '', n: 0}
+                doc.math.push(math)
+              }
+            }, '']
+          }
+        }
+      }
+
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax@4.1.0/tex-mml-chtml.min.js'
+      script.id = 'MathJax-script'
+      script.async = true
+      document.head.appendChild(script)
+    } else {
+      MathJax.startup.document.state(0)
+      MathJax.texReset()
+      MathJax.typesetPromise()
+    }
+  }
+
+  btf.addGlobalFn('encrypt', loadMathjax, 'mathjax')
+  window.pjax ? loadMathjax() : window.addEventListener('load', loadMathjax)
+})()</script><script>(() => {
+  const parseViewBox = viewBox => {
+    if (!viewBox) return null
+    const parts = viewBox.trim().split(/[\s,]+/).map(n => Number(n))
+    if (parts.length !== 4 || parts.some(n => Number.isNaN(n))) return null
+    return parts
+  }
+
+  const getSvgViewBox = svg => {
+    const attr = parseViewBox(svg.getAttribute('viewBox'))
+    if (attr) return attr
+
+    // Fallback: use bbox to build a viewBox
+    try {
+      const bbox = svg.getBBox()
+      if (bbox && bbox.width && bbox.height) return [bbox.x, bbox.y, bbox.width, bbox.height]
+    } catch (e) {
+      // getBBox may fail on some edge cases; ignore
+    }
+
+    const w = Number(svg.getAttribute('width')) || 0
+    const h = Number(svg.getAttribute('height')) || 0
+    if (w > 0 && h > 0) return [0, 0, w, h]
+    return [0, 0, 100, 100]
+  }
+
+  const setSvgViewBox = (svg, vb) => {
+    svg.setAttribute('viewBox', `${vb[0]} ${vb[1]} ${vb[2]} ${vb[3]}`)
+  }
+
+  const clamp = (v, min, max) => Math.max(min, Math.min(max, v))
+
+  const openSvgInNewTab = ({ source, initViewBox }) => {
+    const getClonedSvg = () => {
+      if (typeof source === 'string') {
+        const template = document.createElement('template')
+        template.innerHTML = source.trim()
+        const svg = template.content.querySelector('svg')
+        return svg ? svg.cloneNode(true) : null
+      }
+      if (source && typeof source.cloneNode === 'function') {
+        return source.cloneNode(true)
+      }
+      return null
+    }
+
+    const clone = getClonedSvg()
+    if (!clone) return
+    if (initViewBox && initViewBox.length === 4) {
+      clone.setAttribute('viewBox', initViewBox.join(' '))
+    }
+    if (!clone.getAttribute('xmlns')) clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+    if (!clone.getAttribute('xmlns:xlink') && clone.outerHTML.includes('xlink:')) {
+      clone.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink')
+    }
+    // inject background to match current theme
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
+    const bg = getComputedStyle(document.body).backgroundColor || (isDark ? '#1e1e1e' : '#ffffff')
+    if (!clone.style.background) clone.style.background = bg
+
+    const serializer = new XMLSerializer()
+    const svgSource = serializer.serializeToString(clone)
+    const htmlSource = `<!doctype html><html><head><meta charset="utf-8" />
+      <style>
+        html, body { width: 100%; height: 100%; margin: 0; display: flex; align-items: center; justify-content: center; background: ${bg}; }
+        svg { max-width: 100%; max-height: 100%; height: auto; width: auto; }
+      </style>
+      </head><body>${svgSource}</body></html>`
+    const blob = new Blob([htmlSource], { type: 'text/html;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    window.open(url, '_blank', 'noopener')
+    setTimeout(() => URL.revokeObjectURL(url), 30000)
+  }
+
+  const attachMermaidViewerButton = wrap => {
+    let btn = wrap.querySelector('.mermaid-open-btn')
+    if (!btn) {
+      btn = document.createElement('button')
+      btn.type = 'button'
+      btn.className = 'mermaid-open-btn'
+      wrap.appendChild(btn)
+    }
+
+    btn.innerHTML = '<i class="fa fa-search fa-fw" aria-hidden="true"></i>'
+
+    if (!btn.__mermaidViewerBound) {
+      btn.addEventListener('click', e => {
+        e.preventDefault()
+        e.stopPropagation()
+        const svg = wrap.__mermaidOriginalSvg || wrap.querySelector('svg')
+        if (!svg) return
+        const initViewBox = wrap.__mermaidInitViewBox
+        if (typeof svg === 'string') {
+          openSvgInNewTab({ source: svg, initViewBox })
+          return
+        }
+        openSvgInNewTab({ source: svg, initViewBox })
+      })
+      btn.__mermaidViewerBound = true
+    }
+  }
+
+  // Zoom around a point (px, py) in the SVG viewport (in viewBox coordinates)
+  const zoomAtPoint = (vb, factor, px, py) => {
+    const w = vb[2] * factor
+    const h = vb[3] * factor
+    const nx = px - (px - vb[0]) * factor
+    const ny = py - (py - vb[1]) * factor
+    return [nx, ny, w, h]
+  }
+
+  const initMermaidGestures = wrap => {
+    const svg = wrap.querySelector('svg')
+    if (!svg) return
+
+    // Ensure viewBox exists so gestures always work
+    const initVb = getSvgViewBox(svg)
+    wrap.__mermaidInitViewBox = initVb
+    wrap.__mermaidCurViewBox = initVb.slice()
+    setSvgViewBox(svg, initVb)
+
+    // Avoid binding multiple times on themeChange/pjax
+    if (wrap.__mermaidGestureBound) return
+    wrap.__mermaidGestureBound = true
+
+    // Helper: map client (viewport) coordinate -> viewBox coordinate
+    const clientToViewBox = (clientX, clientY) => {
+      const rect = svg.getBoundingClientRect()
+      const vb = wrap.__mermaidCurViewBox || getSvgViewBox(svg)
+      const x = vb[0] + (clientX - rect.left) * (vb[2] / rect.width)
+      const y = vb[1] + (clientY - rect.top) * (vb[3] / rect.height)
+      return { x, y, rect, vb }
+    }
+
+    const state = {
+      pointers: new Map(),
+      startVb: null,
+      startDist: 0,
+      startCenter: null
+    }
+
+    const clampVb = vb => {
+      const init = wrap.__mermaidInitViewBox || vb
+      const minW = init[2] * 0.1
+      const maxW = init[2] * 10
+      const minH = init[3] * 0.1
+      const maxH = init[3] * 10
+      vb[2] = clamp(vb[2], minW, maxW)
+      vb[3] = clamp(vb[3], minH, maxH)
+      return vb
+    }
+
+    const setCurVb = vb => {
+      vb = clampVb(vb)
+      wrap.__mermaidCurViewBox = vb
+      setSvgViewBox(svg, vb)
+    }
+
+    const onPointerDown = e => {
+      // Allow only primary button for mouse
+      if (e.pointerType === 'mouse' && e.button !== 0) return
+      svg.setPointerCapture(e.pointerId)
+      state.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+
+      if (state.pointers.size === 1) {
+        state.startVb = (wrap.__mermaidCurViewBox || getSvgViewBox(svg)).slice()
+      } else if (state.pointers.size === 2) {
+        const pts = [...state.pointers.values()]
+        const dx = pts[0].x - pts[1].x
+        const dy = pts[0].y - pts[1].y
+        state.startDist = Math.hypot(dx, dy)
+        state.startVb = (wrap.__mermaidCurViewBox || getSvgViewBox(svg)).slice()
+        state.startCenter = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 }
+      }
+    }
+
+    const onPointerMove = e => {
+      if (!state.pointers.has(e.pointerId)) return
+      state.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+
+      // Pan with 1 pointer
+      if (state.pointers.size === 1 && state.startVb) {
+        const p = [...state.pointers.values()][0]
+        const prev = { x: e.clientX - e.movementX, y: e.clientY - e.movementY }
+        // movementX/Y unreliable on touch, compute from stored last position
+        const last = wrap.__mermaidLastSinglePointer || p
+        const dxClient = p.x - last.x
+        const dyClient = p.y - last.y
+        wrap.__mermaidLastSinglePointer = p
+
+        const { rect } = clientToViewBox(p.x, p.y)
+        const vb = (wrap.__mermaidCurViewBox || getSvgViewBox(svg)).slice()
+        const dx = dxClient * (vb[2] / rect.width)
+        const dy = dyClient * (vb[3] / rect.height)
+        setCurVb([vb[0] - dx, vb[1] - dy, vb[2], vb[3]])
+        return
+      }
+
+      // Pinch zoom with 2 pointers
+      if (state.pointers.size === 2 && state.startVb && state.startDist > 0) {
+        const pts = [...state.pointers.values()]
+        const dx = pts[0].x - pts[1].x
+        const dy = pts[0].y - pts[1].y
+        const dist = Math.hypot(dx, dy)
+        if (!dist) return
+        const factor = state.startDist / dist // dist bigger => zoom in (viewBox smaller)
+
+        const cx = (pts[0].x + pts[1].x) / 2
+        const cy = (pts[0].y + pts[1].y) / 2
+        const centerClient = { x: cx, y: cy }
+
+        const pxy = clientToViewBox(centerClient.x, centerClient.y)
+        const cpx = pxy.x
+        const cpy = pxy.y
+
+        const vb = zoomAtPoint(state.startVb, factor, cpx, cpy)
+        setCurVb(vb)
+      }
+    }
+
+    const onPointerUpOrCancel = e => {
+      state.pointers.delete(e.pointerId)
+      if (state.pointers.size === 0) {
+        state.startVb = null
+        state.startDist = 0
+        state.startCenter = null
+        wrap.__mermaidLastSinglePointer = null
+      } else if (state.pointers.size === 1) {
+        // reset single pointer baseline to avoid jump
+        wrap.__mermaidLastSinglePointer = [...state.pointers.values()][0]
+      }
+    }
+
+    // Wheel zoom (mouse/trackpad)
+    const onWheel = e => {
+      // ctrlKey on mac trackpad pinch; we treat both as zoom
+      e.preventDefault()
+      const delta = e.deltaY
+      const zoomFactor = delta > 0 ? 1.1 : 0.9
+      const { x, y } = clientToViewBox(e.clientX, e.clientY)
+      const vb = (wrap.__mermaidCurViewBox || getSvgViewBox(svg)).slice()
+      setCurVb(zoomAtPoint(vb, zoomFactor, x, y))
+    }
+
+    const onDblClick = () => {
+      const init = wrap.__mermaidInitViewBox
+      if (!init) return
+      wrap.__mermaidCurViewBox = init.slice()
+      setSvgViewBox(svg, init)
+    }
+
+    svg.addEventListener('pointerdown', onPointerDown)
+    svg.addEventListener('pointermove', onPointerMove)
+    svg.addEventListener('pointerup', onPointerUpOrCancel)
+    svg.addEventListener('pointercancel', onPointerUpOrCancel)
+    svg.addEventListener('wheel', onWheel, { passive: false })
+    svg.addEventListener('dblclick', onDblClick)
+  }
+
+  const runMermaid = ele => {
+    window.loadMermaid = true
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+
+    ele.forEach((item, index) => {
+      const mermaidSrc = item.firstElementChild
+
+      // Clear old render (themeChange/pjax will rerun)
+      const oldSvg = item.querySelector('svg')
+      if (oldSvg) oldSvg.remove()
+      item.__mermaidGestureBound = false
+
+      const config = mermaidSrc.dataset.config ? JSON.parse(mermaidSrc.dataset.config) : {}
+      if (!config.theme) {
+        config.theme = theme
+      }
+      const mermaidThemeConfig = `%%{init: ${JSON.stringify(config)}}%%\n`
+      const mermaidID = `mermaid-${index}`
+      const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+
+      const renderFn = mermaid.render(mermaidID, mermaidDefinition)
+      const renderMermaid = svg => {
+        mermaidSrc.insertAdjacentHTML('afterend', svg)
+        if (true) initMermaidGestures(item)
+        item.__mermaidOriginalSvg = svg
+        if (true) attachMermaidViewerButton(item)
+      }
+
+
+      // mermaid v9 and v10 compatibility
+      typeof renderFn === 'string' ? renderMermaid(renderFn) : renderFn.then(({ svg }) => renderMermaid(svg))
+    })
+  }
+
+  const codeToMermaid = () => {
+    const codeMermaidEle = document.querySelectorAll('pre > code.mermaid')
+    if (codeMermaidEle.length === 0) return
+
+    codeMermaidEle.forEach(ele => {
+      const preEle = document.createElement('pre')
+      preEle.className = 'mermaid-src'
+      preEle.hidden = true
+      preEle.textContent = ele.textContent
+      const newEle = document.createElement('div')
+      newEle.className = 'mermaid-wrap'
+      newEle.appendChild(preEle)
+      ele.parentNode.replaceWith(newEle)
+    })
+  }
+
+  const loadMermaid = () => {
+    if (true) codeToMermaid()
+    const $mermaid = document.querySelectorAll('#article-container .mermaid-wrap')
+    if ($mermaid.length === 0) return
+
+    const runMermaidFn = () => runMermaid($mermaid)
+    btf.addGlobalFn('themeChange', runMermaidFn, 'mermaid')
+    window.loadMermaid ? runMermaidFn() : btf.getScript('https://cdn.jsdelivr.net/npm/mermaid@11.12.2/dist/mermaid.min.js').then(runMermaidFn)
+  }
+
+  btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
+  window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+})()</script></div><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-fluttering-ribbon.min.js"></script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-show-text.min.js" data-mobile="false" data-text="金榜题名,保持开心,财源滚滚,阖家欢乐,万事顺遂,平平安安" data-fontsize="20px" data-random="true" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div id="algolia-search-input"><div class="ais-SearchBox"><form class="ais-SearchBox-form" action="" role="search" novalidate=""><input class="ais-SearchBox-input" type="search" placeholder="搜索本站..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="512" aria-label="Search"/><button class="ais-SearchBox-submit" type="submit" title="Submit the search query" style="display:none;"><svg class="ais-SearchBox-submitIcon" width="10" height="10" viewBox="0 0 40 40" aria-hidden="true"><path d="M26.804 29.01c-2.832 2.34-6.465 3.746-10.426 3.746C7.333 32.756 0 25.424 0 16.378 0 7.333 7.333 0 16.378 0c9.046 0 16.378 7.333 16.378 16.378 0 3.96-1.406 7.594-3.746 10.426l10.534 10.534c.607.607.61 1.59-.004 2.202-.61.61-1.597.61-2.202.004L26.804 29.01zm-10.426.627c7.323 0 13.26-5.936 13.26-13.26 0-7.32-5.937-13.257-13.26-13.257C9.056 3.12 3.12 9.056 3.12 16.378c0 7.323 5.936 13.26 13.258 13.26z"></path></svg></button></form></div><hr/><div id="algolia-search-results"><div id="algolia-hits"><div id="algolia-hits-empty" style="display:none;"></div><div class="ais-Hits" style="display:none;"><ol class="ais-Hits-list"></ol></div></div><div class="ais-Pagination" id="algolia-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="algolia-info"><span class="ais-Stats-text"></span><a class="algolia-poweredBy" href="https://www.algolia.com/?utm_source=algoliasearch.js&amp;utm_medium=website&amp;utm_content=localhost&amp;utm_campaign=poweredby" target="_blank" aria-label="Search by Algolia" rel="noopener noreferrer"><svg class="ais-PoweredBy-logo" height="1.2em" viewBox="0 0 572 64" style="width: auto;"><path fill="#36395A" d="M16 48.3c-3.4 0-6.3-.6-8.7-1.7A12.4 12.4 0 0 1 1.9 42C.6 40 0 38 0 35.4h6.5a6.7 6.7 0 0 0 3.9 6c1.4.7 3.3 1.1 5.6 1.1 2.2 0 4-.3 5.4-1a7 7 0 0 0 3-2.4 6 6 0 0 0 1-3.4c0-1.5-.6-2.8-1.9-3.7-1.3-1-3.3-1.6-5.9-1.8l-4-.4c-3.7-.3-6.6-1.4-8.8-3.4a10 10 0 0 1-3.3-7.9c0-2.4.6-4.6 1.8-6.4a12 12 0 0 1 5-4.3c2.2-1 4.7-1.6 7.5-1.6s5.5.5 7.6 1.6a12 12 0 0 1 5 4.4c1.2 1.8 1.8 4 1.8 6.7h-6.5a6.4 6.4 0 0 0-3.5-5.9c-1-.6-2.6-1-4.4-1s-3.2.3-4.4 1c-1.1.6-2 1.4-2.6 2.4-.5 1-.8 2-.8 3.1a5 5 0 0 0 1.5 3.6c1 1 2.6 1.7 4.7 1.9l4 .3c2.8.2 5.2.8 7.2 1.8 2.1 1 3.7 2.2 4.9 3.8a9.7 9.7 0 0 1 1.7 5.8c0 2.5-.7 4.7-2 6.6a13 13 0 0 1-5.6 4.4c-2.4 1-5.2 1.6-8.4 1.6Zm35.6 0c-2.6 0-4.8-.4-6.7-1.3a13 13 0 0 1-4.7-3.5 17.1 17.1 0 0 1-3.6-10.4v-1c0-2 .3-3.8 1-5.6a13 13 0 0 1 7.3-8.3 15 15 0 0 1 6.3-1.4A13.2 13.2 0 0 1 64 24.3c1 2.2 1.6 4.6 1.6 7.2V34H39.4v-4.3h21.8l-1.8 2.2c0-2-.3-3.7-.9-5.1a7.3 7.3 0 0 0-2.7-3.4c-1.2-.7-2.7-1.1-4.6-1.1s-3.4.4-4.7 1.3a8 8 0 0 0-2.9 3.6c-.6 1.5-.9 3.3-.9 5.4 0 2 .3 3.7 1 5.3a7.9 7.9 0 0 0 2.8 3.7c1.3.8 3 1.3 5 1.3s3.8-.5 5.1-1.3c1.3-1 2.1-2 2.4-3.2h6a11.8 11.8 0 0 1-7 8.7 16 16 0 0 1-6.4 1.2ZM80 48c-2.2 0-4-.3-5.7-1a8.4 8.4 0 0 1-3.7-3.3 9.7 9.7 0 0 1-1.3-5.2c0-2 .5-3.8 1.5-5.2a9 9 0 0 1 4.3-3.1c1.8-.7 4-1 6.7-1H89v4.1h-7.5c-2 0-3.4.5-4.4 1.4-1 1-1.6 2.1-1.6 3.6s.5 2.7 1.6 3.6c1 1 2.5 1.4 4.4 1.4 1.1 0 2.2-.2 3.2-.7 1-.4 1.9-1 2.6-2 .6-1 1-2.4 1-4.2l1.7 2.1c-.2 2-.7 3.8-1.5 5.2a9 9 0 0 1-3.4 3.3 12 12 0 0 1-5.3 1Zm9.5-.7v-8.8h-1v-10c0-1.8-.5-3.2-1.4-4.1-1-1-2.4-1.4-4.2-1.4a142.9 142.9 0 0 0-10.2.4v-5.6a74.8 74.8 0 0 1 8.6-.4c3 0 5.5.4 7.5 1.2s3.4 2 4.4 3.6c1 1.7 1.4 4 1.4 6.7v18.4h-5Zm12.9 0V17.8h5v12.3h-.2c0-4.2 1-7.4 2.8-9.5a11 11 0 0 1 8.3-3.1h1v5.6h-2a9 9 0 0 0-6.3 2.2c-1.5 1.5-2.2 3.6-2.2 6.4v15.6h-6.4Zm34.4 1a15 15 0 0 1-6.6-1.3c-1.9-.9-3.4-2-4.7-3.5a15.5 15.5 0 0 1-2.7-5c-.6-1.7-1-3.6-1-5.4v-1c0-2 .4-3.8 1-5.6a15 15 0 0 1 2.8-4.9c1.3-1.5 2.8-2.6 4.6-3.5a16.4 16.4 0 0 1 13.3.2c2 1 3.5 2.3 4.8 4a12 12 0 0 1 2 6H144c-.2-1.6-1-3-2.2-4.1a7.5 7.5 0 0 0-5.2-1.7 8 8 0 0 0-4.7 1.3 8 8 0 0 0-2.8 3.6 13.8 13.8 0 0 0 0 10.3c.6 1.5 1.5 2.7 2.8 3.6s2.8 1.3 4.8 1.3c1.5 0 2.7-.2 3.8-.8a7 7 0 0 0 2.6-2c.7-1 1-2 1.2-3.2h6.2a11 11 0 0 1-2 6.2 15.1 15.1 0 0 1-11.8 5.5Zm19.7-1v-40h6.4V31h-1.3c0-3 .4-5.5 1.1-7.6a9.7 9.7 0 0 1 3.5-4.8A9.9 9.9 0 0 1 172 17h.3c3.5 0 6 1.1 7.9 3.5 1.7 2.3 2.6 5.7 2.6 10v16.8h-6.4V29.6c0-2.1-.6-3.8-1.8-5a6.4 6.4 0 0 0-4.8-1.8c-2 0-3.7.7-5 2a7.8 7.8 0 0 0-1.9 5.5v17h-6.4Zm63.8 1a12.2 12.2 0 0 1-10.9-6.2 19 19 0 0 1-1.8-7.3h1.4v12.5h-5.1v-40h6.4v19.8l-2 3.5c.2-3.1.8-5.7 1.9-7.7a11 11 0 0 1 4.4-4.5c1.8-1 3.9-1.5 6.1-1.5a13.4 13.4 0 0 1 12.8 9.1c.7 1.9 1 3.8 1 6v1c0 2.2-.3 4.1-1 6a13.6 13.6 0 0 1-13.2 9.4Zm-1.2-5.5a8.4 8.4 0 0 0 7.9-5c.7-1.5 1.1-3.3 1.1-5.3s-.4-3.8-1.1-5.3a8.7 8.7 0 0 0-3.2-3.6 9.6 9.6 0 0 0-9.2-.2 8.5 8.5 0 0 0-3.3 3.2c-.8 1.4-1.3 3-1.3 5v2.3a9 9 0 0 0 1.3 4.8 9 9 0 0 0 3.4 3c1.4.7 2.8 1 4.4 1Zm27.3 3.9-10-28.9h6.5l9.5 28.9h-6Zm-7.5 12.2v-5.7h4.9c1 0 2-.1 2.9-.4a4 4 0 0 0 2-1.4c.4-.7.9-1.6 1.2-2.7l8.6-30.9h6.2l-9.3 32.4a14 14 0 0 1-2.5 5 8.9 8.9 0 0 1-4 2.8c-1.5.6-3.4.9-5.6.9h-4.4Zm9-12.2v-5.2h6.4v5.2H248Z"></path><path fill="#003DFF" d="M534.4 9.1H528a.8.8 0 0 1-.7-.7V1.8c0-.4.2-.7.6-.8l6.5-1c.4 0 .8.2.9.6v7.8c0 .4-.4.7-.8.7zM428 35.2V.8c0-.5-.3-.8-.7-.8h-.2l-6.4 1c-.4 0-.7.4-.7.8v35c0 1.6 0 11.8 12.3 12.2.5 0 .8-.4.8-.8V43c0-.4-.3-.7-.6-.8-4.5-.5-4.5-6-4.5-7zm106.5-21.8H528c-.4 0-.7.4-.7.8v34c0 .4.3.8.7.8h6.5c.4 0 .8-.4.8-.8v-34c0-.5-.4-.8-.8-.8zm-17.7 21.8V.8c0-.5-.3-.8-.8-.8l-6.5 1c-.4 0-.7.4-.7.8v35c0 1.6 0 11.8 12.3 12.2.4 0 .8-.4.8-.8V43c0-.4-.3-.7-.7-.8-4.4-.5-4.4-6-4.4-7zm-22.2-20.6a16.5 16.5 0 0 1 8.6 9.3c.8 2.2 1.3 4.8 1.3 7.5a19.4 19.4 0 0 1-4.6 12.6 14.8 14.8 0 0 1-5.2 3.6c-2 .9-5.2 1.4-6.8 1.4a21 21 0 0 1-6.7-1.4 15.4 15.4 0 0 1-8.6-9.3 21.3 21.3 0 0 1 0-14.4 15.2 15.2 0 0 1 8.6-9.3c2-.8 4.3-1.2 6.7-1.2s4.6.4 6.7 1.2zm-6.7 27.6c2.7 0 4.7-1 6.2-3s2.2-4.3 2.2-7.8-.7-6.3-2.2-8.3-3.5-3-6.2-3-4.7 1-6.1 3c-1.5 2-2.2 4.8-2.2 8.3s.7 5.8 2.2 7.8 3.5 3 6.2 3zm-88.8-28.8c-6.2 0-11.7 3.3-14.8 8.2a18.6 18.6 0 0 0 4.8 25.2c1.8 1.2 4 1.8 6.2 1.7s.1 0 .1 0h.9c4.2-.7 8-4 9.1-8.1v7.4c0 .4.3.7.8.7h6.4a.7.7 0 0 0 .7-.7V14.2c0-.5-.3-.8-.7-.8h-13.5zm6.3 26.5a9.8 9.8 0 0 1-5.7 2h-.5a10 10 0 0 1-9.2-14c1.4-3.7 5-6.3 9-6.3h6.4v18.3zm152.3-26.5h13.5c.5 0 .8.3.8.7v33.7c0 .4-.3.7-.8.7h-6.4a.7.7 0 0 1-.8-.7v-7.4c-1.2 4-4.8 7.4-9 8h-.1a4.2 4.2 0 0 1-.5.1h-.9a10.3 10.3 0 0 1-7-2.6c-4-3.3-6.5-8.4-6.5-14.2 0-3.7 1-7.2 3-10 3-5 8.5-8.3 14.7-8.3zm.6 28.4c2.2-.1 4.2-.6 5.7-2V21.7h-6.3a9.8 9.8 0 0 0-9 6.4 10.2 10.2 0 0 0 9.1 13.9h.5zM452.8 13.4c-6.2 0-11.7 3.3-14.8 8.2a18.5 18.5 0 0 0 3.6 24.3 10.4 10.4 0 0 0 13 .6c2.2-1.5 3.8-3.7 4.5-6.1v7.8c0 2.8-.8 5-2.2 6.3-1.5 1.5-4 2.2-7.5 2.2l-6-.3c-.3 0-.7.2-.8.5l-1.6 5.5c-.1.4.1.8.5 1h.1c2.8.4 5.5.6 7 .6 6.3 0 11-1.4 14-4.1 2.7-2.5 4.2-6.3 4.5-11.4V14.2c0-.5-.4-.8-.8-.8h-13.5zm6.3 8.2v18.3a9.6 9.6 0 0 1-5.6 2h-1a10.3 10.3 0 0 1-8.8-14c1.4-3.7 5-6.3 9-6.3h6.4zM291 31.5A32 32 0 0 1 322.8 0h30.8c.6 0 1.2.5 1.2 1.2v61.5c0 1.1-1.3 1.7-2.2 1l-19.2-17a18 18 0 0 1-11 3.4 18.1 18.1 0 1 1 18.2-14.8c-.1.4-.5.7-.9.6-.1 0-.3 0-.4-.2l-3.8-3.4c-.4-.3-.6-.8-.7-1.4a12 12 0 1 0-2.4 8.3c.4-.4 1-.5 1.6-.2l14.7 13.1v-46H323a26 26 0 1 0 10 49.7c.8-.4 1.6-.2 2.3.3l3 2.7c.3.2.3.7 0 1l-.2.2a32 32 0 0 1-47.2-28.6z"></path></svg></a></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch@5.47.0/dist/lite/builds/browser.umd.min.js"></script><script src="/js/search/algolia.js?v=5.5.4"></script></div></div></body></html>
